@@ -1,0 +1,11 @@
+---
+# Example setup for IPSEC client connection
+# Please take precautions to protect the password using Ansible Vault or other
+# encryption!
+# ipsec_conns:
+#   - { name: 'example-ipsec'
+#       server: 'ipsec.example.com'
+#       subnet: '0.0.0.0/0'
+#       auth: 'pubkey'
+#       username: 'jdoe'
+#       password: 'foobarbaz' }

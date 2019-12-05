@@ -1,0 +1,57 @@
+---
+- name: 'Ensure packages'
+  package:
+    name:
+      - 'strongswan'
+      - 'libcharon-extra-plugins'
+    state: 'present'
+
+- name: 'Ensure base config files'
+  copy:
+    src: "{{ file }}"
+    dest: "/etc/{{ file }}"
+    force: false
+    mode: 0600
+    owner: 'root'
+    group: 'root'
+  loop:
+    - 'ipsec.conf'
+    - 'ipsec.secrets'
+  loop_control:
+    loop_var: 'file'
+
+- name: 'Ensure service'
+  service:
+    name: 'strongswan'
+    state: 'started'
+    enabled: true
+
+- name: 'Add credentials to /etc/ipsec.secrets'
+  blockinfile:
+    path: '/etc/ipsec.secrets'
+    block: |
+      {{ conn.username }} : EAP {{ conn.password }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ conn.name }}"
+    loop: "{{ ipsec_conns | default([]) }}"
+    loop_control:
+      loop_var: 'conn'
+
+- name: 'Add server config to /etc/ipsec.conf'
+  blockinfile:
+    path: '/etc/ipsec.conf'
+    block: |
+      conn {{ conn.name }}
+      right={{ conn.server }}
+      rightid={{ conn.server }}
+      rightsubnet={{ conn.subnet }}
+      rightauth={{ conn.auth }}
+      leftsourceip=%config
+      leftid={{ conn.username }}
+      leftauth=eap-mschapv2
+      eap_identity=%identity
+      auto=start
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ conn.name }}"
+    loop: "{{ ipsec_conns | default([]) }}"
+    loop_control:
+      loop_var: 'conn'
+    notify: 'restart strongswan'
