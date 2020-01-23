@@ -3,9 +3,7 @@
 # Please take precautions to protect the password using Ansible Vault or other
 # encryption!
 # ipsec_conns:
-#   - { name: 'example-ipsec'
-#       server: 'ipsec.example.com'
-#       subnet: '0.0.0.0/0'
-#       auth: 'pubkey'
-#       username: 'jdoe'
-#       password: 'foobarbaz' }
+#   - { name: 'example-ipsec',
+#       server: 'ipsec.example.com',
+#       subnet: '0.0.0.0/0',
+#       auth: "1.1.1.1  2.2.2.2 : PSK 'super_secret_password'",

@@ -29,8 +29,7 @@
 - name: 'Add credentials to /etc/ipsec.secrets'
   blockinfile:
     path: '/etc/ipsec.secrets'
-    block: |
-      {{ conn.username }} : EAP {{ conn.password }}
+    block: "{{ conn.auth }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ conn.name }}"
     loop: "{{ ipsec_conns | default([]) }}"
     loop_control:
