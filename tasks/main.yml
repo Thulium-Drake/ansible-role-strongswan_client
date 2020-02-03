@@ -40,15 +40,22 @@
     path: '/etc/ipsec.conf'
     block: |
       conn {{ conn.name }}
-      right={{ conn.server }}
-      rightid={{ conn.server }}
-      rightsubnet={{ conn.subnet }}
-      rightauth={{ conn.auth }}
-      leftsourceip=%config
-      leftid={{ conn.username }}
-      leftauth=eap-mschapv2
-      eap_identity=%identity
-      auto=start
+        authby=secret
+        left={{ conn.pubip }}
+        leftsubnet={{ conn.localsubnet }}
+        right={{ conn.server }}
+        rightsubnet={{ conn.subnet }}
+        ike=aes256-sha1-modp1536
+        esp=aes256-sha1-modp1536
+        keyingtries=0
+        ikelifetime=24h
+        lifetime=1h
+        dpddelay=30
+        dpdtimeout=120
+        dpdaction=restart
+        auto=start
+        leftauth=psk
+        rightauth=psk
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ conn.name }}"
     loop: "{{ ipsec_conns | default([]) }}"
     loop_control:
