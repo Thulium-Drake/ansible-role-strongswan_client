@@ -31,9 +31,9 @@
     path: '/etc/ipsec.secrets'
     block: "{{ conn.auth }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ conn.name }}"
-    loop: "{{ ipsec_conns | default([]) }}"
-    loop_control:
-      loop_var: 'conn'
+  loop: "{{ ipsec_conns | default([]) }}"
+  loop_control:
+    loop_var: 'conn'
 
 - name: 'Add server config to /etc/ipsec.conf'
   blockinfile:
@@ -57,7 +57,7 @@
         leftauth=psk
         rightauth=psk
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ conn.name }}"
-    loop: "{{ ipsec_conns | default([]) }}"
-    loop_control:
-      loop_var: 'conn'
-    notify: 'restart strongswan'
+  loop: "{{ ipsec_conns | default([]) }}"
+  loop_control:
+    loop_var: 'conn'
+  notify: 'restart strongswan'
